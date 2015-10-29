@@ -19,6 +19,9 @@ sources:
     osm:
         type: TopoJSONTiles
         url:  //vector.mapzen.com/osm/all/{z}/{x}/{y}.topojson
+    sf0:
+        type: GeoJSON
+        url:  sfcontours-0.json
 layers:
     water:
         data: { source: osm }
@@ -74,3 +77,10 @@ layers:
                     font:
                         fill: white
                         typeface: 100 11px Helvetica
+    sf0:
+        data: { source: sf0 }
+        draw:
+            lines:
+                order: 100
+                width: 2px
+                color: red
