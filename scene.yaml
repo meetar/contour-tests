@@ -4,7 +4,7 @@ cameras:
         # type: isometric
         axis: [0, -10]
         vanishing_point: [0, 0]
-        fov: 170
+        # focal_length: 170
 lights:
     directional1:
         type: directional
@@ -12,6 +12,32 @@ lights:
         diffuse: .7
         ambient: .5
 styles:
+    tilt:
+        animated: true
+        shaders:
+            blocks:
+                global: |
+                    mat3 rotateX3D(float phi){
+                        return mat3(
+                            vec3(1.,0.,0.),
+                            vec3(0.,cos(phi),-sin(phi)),
+                            vec3(0.,sin(phi),cos(phi)));
+                    }
+                    mat3 rotateZ3D(float psi){
+                        return mat3(
+                            vec3(cos(psi),-sin(psi),0.),
+                            vec3(sin(psi),cos(psi),0.),
+                            vec3(0.,0.,1.));
+                    }
+                position: |
+                    float t = u_time*0.05; 
+                    position.xyz = rotateX3D(.85) * rotateZ3D(sin(t*2.)*.5) * position.xyz;
+                    position.y += 200.;
+                    position.z += 5000.;
+    tilt-lines:
+         base: lines
+         mix: tilt  
+
     buildings:
         base: polygons
         shaders:
@@ -19,14 +45,14 @@ styles:
                 color: |
                     color.rgb *= vec3(min((v_world_position.z*.001 + .5),1.));
     redline:
-        base: lines
+        mix: tilt-lines
         shaders:
             uniforms:
                 u_alpha: 0.
             blocks:
                 color: |
                     color.a = u_alpha;
-    sf0:
+    sf0:    
         mix: redline
         shaders:
             uniforms:
@@ -74,94 +100,96 @@ layers:
     water:
         data: { source: osm }
         draw:
-            polygons:
+            tilt:
                 order: 2
                 color: '#353535'
     earth:
         data: { source: osm }
         draw:
-            polygons:
+            tilt:
                 order: 0
                 color: '#555'
     landuse:
         data: { source: osm }
         draw:
-            polygons:
+            tilt:
                 order: 1
                 color: '#666'
     roads:
         data: { source: osm }
+        filter:
+            not: {is_tunnel: yes}
         draw:
-            lines:
+            tilt-lines:
                 order: 2
                 color: '#777'
                 width: 5
-    buildings:
-        data: { source: osm }
-        draw:
-            polygons:
-                order: 50
-                color: '#999'
-        extruded:
-            draw:
-                polygons:
-                    style: buildings
-                    extrude: function () { return feature.height > 0 || $zoom >= 16; }
-    road_labels:
-        data: { source: osm, layer: roads }
-        filter: { name: true, aeroway: false, tunnel: false, railway: false, not: { kind: rail } }
+    # buildings:
+    #     data: { source: osm }
+    #     draw:
+    #         polygons:
+    #             order: 50
+    #             color: '#999'
+        # extruded:
+        #     draw:
+        #         polygons:
+        #             style: buildings
+                    # extrude: function () { return feature.height > 0 || $zoom >= 16; }
+    # road_labels:
+    #     data: { source: osm, layer: roads }
+    #     filter: { name: true, aeroway: false, tunnel: false, railway: false, not: { kind: rail } }
 
-        highway:
-            filter: { kind: highway, $zoom: { min: 7 } }
-            draw:
-                text:
-                    font:
-                        fill: white
-                        typeface: 500 12px Helvetica
-        not_highway:
-            filter: { not: { kind: highway }, $zoom: { min: 13 } }
-            draw:
-                text:
-                    font:
-                        fill: white
-                        typeface: 100 11px Helvetica
+    #     highway:
+    #         filter: { kind: highway, $zoom: { min: 7 } }
+    #         draw:
+    #             text:
+    #                 font:
+    #                     fill: white
+    #                     typeface: 500 12px Helvetica
+    #     not_highway:
+    #         filter: { not: { kind: highway }, $zoom: { min: 13 } }
+    #         draw:
+    #             text:
+    #                 font:
+    #                     fill: white
+    #                     typeface: 100 11px Helvetica
     sf0:
         data: { source: sf0 }
         draw:
             sf0:
                 order: 100
-                width: 4px
-                color: red
+                width: 1px
+                color: lightblue
                 z: 0
     sf5:
         data: { source: sf5 }
         draw:
             sf0:
                 order: 100
-                width: 4px
-                color: red
-                z: 5
+                width: 1px
+                color: lightblue
+                z: 50
     sf10:
         data: { source: sf10 }
         draw:
             sf0:
                 order: 100
-                width: 4px
-                color: red
-                z: 10
+                width: 1px
+                color: lightblue
+                z: 100
     sf15:
         data: { source: sf15 }
         draw:
             sf0:
                 order: 100
-                width: 4px
-                color: red
-                z: 15
+                width: 1px
+                color: lightblue
+                z: 150
     sf20:
         data: { source: sf20 }
         draw:
             sf0:
                 order: 100
-                width: 4px
-                color: red
-                z: 20
+                width: 1px
+                color: lightblue
+                z: 200
