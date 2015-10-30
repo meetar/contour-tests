@@ -1,7 +1,10 @@
 cameras:
     perspective:
         type: perspective
-        vanishing_point: [0, -500]
+        # type: isometric
+        axis: [0, -10]
+        vanishing_point: [0, 0]
+        fov: 170
 lights:
     directional1:
         type: directional
@@ -15,6 +18,39 @@ styles:
             blocks:
                 color: |
                     color.rgb *= vec3(min((v_world_position.z*.001 + .5),1.));
+    redline:
+        base: lines
+        shaders:
+            uniforms:
+                u_alpha: 0.
+            blocks:
+                color: |
+                    color.a = u_alpha;
+    sf0:
+        mix: redline
+        shaders:
+            uniforms:
+                u_alpha: 0.
+    sf5:
+        mix: redline
+        shaders:
+            uniforms:
+                u_alpha: 0.
+    sf10:
+        mix: redline
+        shaders:
+            uniforms:
+                u_alpha: 0.
+    sf15:
+        mix: redline
+        shaders:
+            uniforms:
+                u_alpha: 0.
+    sf20:
+        mix: redline
+        shaders:
+            uniforms:
+                u_alpha: 0.
 sources:
     osm:
         type: TopoJSONTiles
@@ -22,6 +58,18 @@ sources:
     sf0:
         type: GeoJSON
         url:  sfcontours-0.json
+    sf5:
+        type: GeoJSON
+        url:  sfcontours-5.json
+    sf10:
+        type: GeoJSON
+        url:  sfcontours-10.json
+    sf15:
+        type: GeoJSON
+        url:  sfcontours-15.json
+    sf20:
+        type: GeoJSON
+        url:  sfcontours-20.json
 layers:
     water:
         data: { source: osm }
@@ -80,7 +128,40 @@ layers:
     sf0:
         data: { source: sf0 }
         draw:
-            lines:
+            sf0:
                 order: 100
-                width: 2px
+                width: 4px
                 color: red
+                z: 0
+    sf5:
+        data: { source: sf5 }
+        draw:
+            sf0:
+                order: 100
+                width: 4px
+                color: red
+                z: 5
+    sf10:
+        data: { source: sf10 }
+        draw:
+            sf0:
+                order: 100
+                width: 4px
+                color: red
+                z: 10
+    sf15:
+        data: { source: sf15 }
+        draw:
+            sf0:
+                order: 100
+                width: 4px
+                color: red
+                z: 15
+    sf20:
+        data: { source: sf20 }
+        draw:
+            sf0:
+                order: 100
+                width: 4px
+                color: red
+                z: 20
