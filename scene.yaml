@@ -13,6 +13,7 @@ lights:
         ambient: .5
 styles:
     tilt:
+        base: polygons
         animated: true
         shaders:
             blocks:
@@ -46,41 +47,62 @@ styles:
                     color.rgb *= vec3(min((v_world_position.z*.001 + .5),1.));
     redline:
         mix: tilt-lines
-        shaders:
-            uniforms:
-                u_alpha: 0.
-            blocks:
-                color: |
-                    color.a = u_alpha;
-    sf0:    
+        blend: overlay
+    sfneg5:
         mix: redline
         shaders:
             uniforms:
-                u_alpha: 0.
+                u_alpha_5: 1.
+            blocks:
+                color: |
+                    color.a = u_alpha_5;
+    sf0:
+        mix: redline
+        shaders:
+            uniforms:
+                u_alpha0: 0.
+            blocks:
+                color: |
+                    color.a = u_alpha0;
     sf5:
         mix: redline
         shaders:
             uniforms:
-                u_alpha: 0.
+                u_alpha5: 0.
+            blocks:
+                color: |
+                    color.a = u_alpha5;
     sf10:
         mix: redline
         shaders:
             uniforms:
-                u_alpha: 0.
+                u_alpha10: 0.
+            blocks:
+                color: |
+                    color.a = u_alpha10;
     sf15:
         mix: redline
         shaders:
             uniforms:
-                u_alpha: 0.
+                u_alpha15: 0.
+            blocks:
+                color: |
+                    color.a = u_alpha15;
     sf20:
         mix: redline
         shaders:
             uniforms:
-                u_alpha: 0.
+                u_alpha20: 0.
+            blocks:
+                color: |
+                    color.a = u_alpha20;
 sources:
     osm:
         type: TopoJSONTiles
         url:  //vector.mapzen.com/osm/all/{z}/{x}/{y}.topojson
+    sfneg5:
+        type: GeoJSON
+        url:  sfcontours--5.json
     sf0:
         type: GeoJSON
         url:  sfcontours-0.json
@@ -102,19 +124,19 @@ layers:
         draw:
             tilt:
                 order: 2
-                color: '#353535'
+                color: '#222'
     earth:
         data: { source: osm }
         draw:
             tilt:
                 order: 0
-                color: '#555'
-    landuse:
-        data: { source: osm }
-        draw:
-            tilt:
-                order: 1
-                color: '#666'
+                color: '#333'
+    # landuse:
+    #     data: { source: osm }
+    #     draw:
+    #         tilt:
+    #             order: 1
+    #             color: '#444'
     roads:
         data: { source: osm }
         filter:
@@ -122,7 +144,7 @@ layers:
         draw:
             tilt-lines:
                 order: 2
-                color: '#777'
+                color: '#555'
                 width: 5
     # buildings:
     #     data: { source: osm }
@@ -135,6 +157,7 @@ layers:
         #         polygons:
         #             style: buildings
                     # extrude: function () { return feature.height > 0 || $zoom >= 16; }
+
     # road_labels:
     #     data: { source: osm, layer: roads }
     #     filter: { name: true, aeroway: false, tunnel: false, railway: false, not: { kind: rail } }
@@ -153,43 +176,51 @@ layers:
     #                 font:
     #                     fill: white
     #                     typeface: 100 11px Helvetica
+    sfneg5:
+        data: { source: sfneg5 }
+        draw:
+            sfneg5:
+                order: 100
+                width: 2px
+                color: lightblue
+                z: -5
     sf0:
         data: { source: sf0 }
         draw:
             sf0:
                 order: 100
-                width: 1px
+                width: 2px
                 color: lightblue
                 z: 0
     sf5:
         data: { source: sf5 }
         draw:
-            sf0:
+            sf5:
                 order: 100
-                width: 1px
+                width: 2px
                 color: lightblue
                 z: 50
     sf10:
         data: { source: sf10 }
         draw:
-            sf0:
+            sf10:
                 order: 100
-                width: 1px
+                width: 2px
                 color: lightblue
                 z: 100
     sf15:
         data: { source: sf15 }
         draw:
-            sf0:
+            sf15:
                 order: 100
-                width: 1px
+                width: 2px
                 color: lightblue
                 z: 150
     sf20:
         data: { source: sf20 }
         draw:
-            sf0:
+            sf20:
                 order: 100
-                width: 1px
+                width: 2px
                 color: lightblue
                 z: 200
