@@ -33,7 +33,7 @@ styles:
                 position: |
                     float t = u_time*0.05; 
                     position.xyz = rotateX3D(.85) * rotateZ3D(sin(t*2.)*.5) * position.xyz;
-                    position.y += 200.;
+                    position.y += 1000.;
                     position.z += 5000.;
     tilt-lines:
          base: lines
