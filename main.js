@@ -48,11 +48,36 @@ map = (function () {
 
     var hash = new L.Hash(map);
 
+        // Create dat GUI
+    var gui = new dat.GUI({ autoPlace: true, hideable: false, width: 300 });
+    function addGUI () {
+        gui.domElement.parentNode.style.zIndex = 5; // make sure GUI is on top of map
+        window.gui = gui;
+        gui.altitude = -5;
+        gui.add(gui, 'altitude', -5, 20).name("&nbsp;&nbsp;altitude").onChange(function(value) {
+            var a = 0;
+            a = Math.min(1, .66/Math.abs(value + 5));
+            scene.styles.sfneg5.shaders.uniforms.u_alpha_5 = a;
+            a = .66/Math.abs(value - 0);
+            scene.styles.sf0.shaders.uniforms.u_alpha0 = a;
+            a = .66/Math.abs(value - 5);
+            scene.styles.sf5.shaders.uniforms.u_alpha5 = a;
+            a = .66/Math.abs(value - 10);
+            scene.styles.sf10.shaders.uniforms.u_alpha10 = a;
+            a = .66/Math.abs(value - 15);
+            scene.styles.sf15.shaders.uniforms.u_alpha15 = a;
+            a = .66/Math.abs(value - 20);
+            scene.styles.sf20.shaders.uniforms.u_alpha20 = a;
+            scene.requestRedraw();
+        });
+    }
+
     /***** Render loop *****/
 
     window.addEventListener('load', function () {
         // Scene initialized
         layer.on('init', function() {
+            addGUI();
         });
         layer.addTo(map);
     });
